@@ -43,7 +43,9 @@ int main(){
         if (pthread_create(&server, NULL, runServer, param) != 0) {
             printf("main error: can't create sender thread \n");
         }
+
         runClient(param);
+        pthread_join(server,NULL);
     }
 
 

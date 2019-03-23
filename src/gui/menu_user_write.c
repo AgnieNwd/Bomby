@@ -104,12 +104,12 @@ int initParam(Menu* menu, ConnectionProps* param)
     if(menu->choice == 1 && param->ip != NULL)
     {
         param->ip = userWrite(menu);
-        if(menu->choice == 1 && strcmp(param->ip, "127.0.0.1") == 0)
+        if(menu->choice == 1 )//&& strcmp(param->ip, "127.0.0.1") == 0)
         {
             menu->error = 0;
             menu->ifIP = 1;
             param->port = userWrite(menu);
-           if(strlen(param->port) == 4)
+            if(strlen(param->port) == 4)
                 result = 1;
             else if (menu->choice == 1)
             {

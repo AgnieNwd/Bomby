@@ -211,7 +211,7 @@ int startServer(char* port){
     int server_socket;// ret;
     struct sockaddr_in serverAddr;
     struct timeval waiting_time;
-    int connected_client;
+    int connected_client = 0;
     struct sockaddr_in newAddr;
     socklen_t addr_size;
     fd_set file_discriptor;
@@ -236,15 +236,22 @@ int startServer(char* port){
         exit(1);
     }
     if(listen(server_socket, serverConfig.allowedClientsCount) == 0)
+    {
         printf("waiting clients....\n");
+    }
     else
+    {
         perror("listen()");
+    }
+
+
+    waiting_time.tv_sec = 1;
+    waiting_time.tv_usec = 0;
     while(1) {
-        waiting_time.tv_sec = 1;
-        waiting_time.tv_usec = 0;
         connected_client = accept(server_socket, (struct sockaddr *) &newAddr, &addr_size);
+
         FD_ZERO(&file_discriptor);
-        if (connected_client > 0) {
+        if (connected_client >= 0) {
             printf("Connection attempt of %s:%d\n", inet_ntoa(newAddr.sin_addr), ntohs(newAddr.sin_port));
             if(itsNewClient(connected_clients,connected_client) && acceptNewClient(connected_clients,connected_client, newAddr , &connected_clients_cnt)) {
                 printf("New connection %s:%d\n", inet_ntoa(newAddr.sin_addr), ntohs(newAddr.sin_port));
@@ -281,6 +288,8 @@ int startServer(char* port){
         }
         initListeners(connected_clients,&file_discriptor , waiting_time);
         checkMessages(connected_clients,&file_discriptor , &connected_clients_cnt);
+        connected_client = -1;
+
     }
     return 0;
 }
