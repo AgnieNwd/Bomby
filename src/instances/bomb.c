@@ -10,11 +10,15 @@
 #include "headers/cell.h"
 #include "headers/map.h"
 #include "../network/headers/server.h"
+#include "../gui/headers/gui.h"
 
 
 pthread_mutex_t exploseBombMutex;
 
 void * playerPlaintTheBomb(void *args){
+    struct timespec animation;
+    animation.tv_sec = 0;
+    animation.tv_nsec = 250;
     Object *player = (Object*) args;
     if(player->bombsCnt>0)
     {
@@ -42,11 +46,11 @@ void * playerPlaintTheBomb(void *args){
     }
     printMaps();
     notificateAllClients();
-    sleep(1);
+    nanosleep(&animation , NULL);
     for(int i=0;i<5;i++)
     {
         if(bombs[i]!=NULL) {
-            explose(bombs[i]);
+            explose(bombs[i], player);
             removeObjFromCell(bombs[i], bombs[i]->posY, bombs[i]->posX);
             free(bombs[i]);
         }
@@ -58,11 +62,11 @@ void * playerPlaintTheBomb(void *args){
     return 0;
 }
 
-void explose(Object *explosion)
+void explose(Object *explosion, Object *bombOwner)
 {
     Object *targetCell = getCell(explosion->posY,explosion->posX);
 
-   // pthread_mutex_lock(&exploseBombMutex);
+    pthread_mutex_lock(&exploseBombMutex);
     Object *current = targetCell;
     if(current->next)
     {
@@ -71,12 +75,22 @@ void explose(Object *explosion)
             if(current->type != BLOCK && current->type != CELL && current != explosion)
             {
                 removeObjFromCell(current,current->posY,current->posX);
+                if(current->type == PLAYER)
+                {
+                    bombOwner->score++;
+                    current->alive = 0;
+                    checkGameOver();
+                }
+                else
+                {
+                    free(current);
+                }
             }
+
             current = tmp;
         }
 
     }
 
-  //  targetCell->last=getProritaryAppairanceByObject(targetCell);
-  //  pthread_mutex_unlock(&exploseBombMutex);
+   pthread_mutex_unlock(&exploseBombMutex);
 }

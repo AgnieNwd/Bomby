@@ -61,36 +61,31 @@ Menu* main_menu()
 
 void showMenu(Menu* menu)
 {
-    SDL_Texture* title = NULL;
-    SDL_Texture* sousTitre1 = NULL;
-    SDL_Texture* sousTitre2 = NULL;
-    SDL_Texture* ip = NULL;
-    SDL_Texture* error = NULL;
+    SDL_Texture* txt= NULL;
 
     SDL_RenderClear(menu->Renderer);
     SDL_RenderCopy(menu->Renderer, menu->menuTilset, NULL, &menu->MenuSize);
-    showText(title, menu->Renderer, "Welcome to the Bomberman", 200, 30);
-    showText(title, menu->Renderer, "Press m to return to the main menu", 200, 300);
-    showText(title, menu->Renderer, "escape to quit", 10, 0);
+    showText(txt, menu->Renderer, "Welcome to the Bomberman", 200, 30);
+    showText(txt, menu->Renderer, "Press m to return to the main menu", 200, 300);
+    showText(txt, menu->Renderer, "escape to quit", 10, 0);
     if (menu->choice == 0) // le menu principal
     {
-        showText(sousTitre1, menu->Renderer, "Join a game", 40, 100);
-        showText(sousTitre2, menu->Renderer, "Host a game", 40, 170);
+        showText(txt, menu->Renderer, "Join a game", 40, 100);
+        showText(txt, menu->Renderer, "Host a game", 40, 170);
         SDL_RenderCopy(menu->Renderer, menu->cursorBomb, NULL, &menu->cursor);
     } else if(menu->choice == 1)// rejoindre une game
     {
-        showText(sousTitre1, menu->Renderer, "IP address : ", 40, 100);
-        showText(sousTitre2, menu->Renderer, "Port : ", 40, 170);
+        showText(txt, menu->Renderer, "IP address : ", 40, 100);
+        showText(txt, menu->Renderer, "Port : ", 40, 170);
         if(menu->ifIP == 1) // correctif d'un affichage bug de l'ip
-            showText(ip, menu->Renderer, "127.0.0.1", 200, 100);
+            showText(txt, menu->Renderer, "127.0.0.1", 200, 100);
     } else
-    {
-        showText(sousTitre2, menu->Renderer, "Port : ", 40, 170);
-    }
+        showText(txt, menu->Renderer, "Port : ", 40, 170);
+    //gestion erreur
     if (menu->error == 1)
-        showText(error, menu->Renderer, "Mauvais IP",0 , 350);
+        showText(txt, menu->Renderer, "Mauvais IP",0 , 350);
     else if (menu->error == 2)
-        showText(error, menu->Renderer, "Mauvais Port",0 , 350);
+        showText(txt, menu->Renderer, "Mauvais Port",0 , 350);
     SDL_RenderPresent(menu->Renderer);
 }
 

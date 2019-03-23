@@ -17,21 +17,11 @@
 #include "../instances/headers/cell.h"
 #include "../instances/headers/player.h"
 
-char serverMap[10][10];
-
 
 static Client connected_clients[4];
-
-void  notificateAllClients()
-{
-
-    for (int i = 0; i < serverConfig.allowedClientsCount; i++) {
-        if (connected_clients[i].connected == CONNECTED)
-        {
-            write(connected_clients[i].socket,serverMap, sizeof(serverMap));
-        }
-    }
-}
+static game_info_t g;
+int gameOver = 0;
+int minClientsToStart = 3;
 
 Object * getPlayerBySocket(int sock)
 {
@@ -44,23 +34,57 @@ Object * getPlayerBySocket(int sock)
     printf("error Player not found \n");
     return NULL;
 }
-void  notificateOtherClients(int sock)
+void  notificateAllClients()
 {
-
     for (int i = 0; i < serverConfig.allowedClientsCount; i++) {
-        if (connected_clients[i].connected == CONNECTED && sock != connected_clients[i].socket)
+        if (connected_clients[i].connected == CONNECTED)
         {
-            write(connected_clients[i].socket,serverMap, sizeof(serverMap));
+            int tmpNotifaction = g.notifaction;
+            if(getPlayerBySocket(connected_clients[i].socket)->alive==0)
+            {
+                g.notifaction = 3;
+                write(connected_clients[i].socket,&g, sizeof(g));
+                g.notifaction = tmpNotifaction;
+            } else{
+                if(gameOver == 1)
+                {
+                 g.notifaction = 4;
+                }
+                initPlayerScore(getPlayerBySocket(connected_clients[i].socket));
+                write(connected_clients[i].socket,&g, sizeof(g));
+                g.score = 0;
+            }
+
         }
     }
 }
 
+void checkGameOver()
+{
+    int aliveCnt = 0;
+    for (int i = 0; i < serverConfig.allowedClientsCount; i++) {
+        if (connected_clients[i].connected == CONNECTED && getPlayerBySocket(connected_clients[i].socket)->alive==1)
+        {
+            aliveCnt +=1;
 
-void setCellInServerMap(int y , int x, char ch) {
-
-    serverMap[x][y] = ch;
+        }
+    }
+    if(aliveCnt == 1)
+    {
+        gameOver = 1;
+    }
 }
 
+
+void setCellInServerMap(int y , int x, char ch)
+{
+    g.map[x][y] = ch;
+}
+
+void initPlayerScore(Object* player)
+{
+    g.score = player->score;
+}
 
 void initServerConfigs()
 {
@@ -79,19 +103,15 @@ void initClients(Client *connected_clients)
         {
             case 0:
                 connected_clients[i].player = generateNewObject(11,1,1);
-                addObjToCell(connected_clients[i].player,1,1); //white
                 break;
             case 1:
                 connected_clients[i].player = generateNewObject(12,8,8);
-                addObjToCell(connected_clients[i].player,8,8); //black
                 break;
             case 2:
                 connected_clients[i].player = generateNewObject(13,1,8);
-                addObjToCell(connected_clients[i].player,1,8); //red
                 break;
             case 3:
                 connected_clients[i].player = generateNewObject(14,8,1);
-                addObjToCell(connected_clients[i].player,8,1); //blue
                 break;
 
             default:
@@ -140,7 +160,7 @@ void initListeners(Client *connected_clients,fd_set *file_discriptor , struct ti
     select(sockSum + 1, file_discriptor, NULL, NULL, &waiting_time);
 }
 
-int read_client(int client)
+int read_client(int client, int *connected_clients_cnt)
 {
     // int  n;
     char buff[1];
@@ -155,9 +175,11 @@ int read_client(int client)
         return -1;
     }
 
-    playerInterfaceController(getPlayerBySocket(client),buff[0]);
+    if (*connected_clients_cnt >= minClientsToStart && gameOver == 0) {
+        playerInterfaceController(getPlayerBySocket(client), buff[0]);
+        g.notifaction = 0;
+    }    
     notificateAllClients();
-   // remapMap();
     memset(buff, '\n', sizeof(buff));
     return (0);
 }
@@ -168,7 +190,7 @@ void checkMessages(Client *connected_clients,fd_set *file_discriptor, int *conne
     for (int i = 0; i < serverConfig.allowedClientsCount; i++) {
         if (connected_clients[i].connected == CONNECTED) {
             if(FD_ISSET(connected_clients[i].socket, file_discriptor)) {
-                if (read_client(connected_clients[i].socket) == -1) {
+                if (read_client(connected_clients[i].socket, connected_clients_cnt) == -1) {
                     if (*connected_clients_cnt != 0)
                         *connected_clients_cnt -= 1;
                     printf("Player:(%d)%s:%d disconnected\n", connected_clients[i].id,
@@ -197,11 +219,6 @@ int startServer(char* port){
     int connected_clients_cnt = 0;
     initMapByObjects();
     initClients(connected_clients);
-
-/*    if (argc != 2) {
-        printf("usage : %s PORT\n", argv[0]);
-        return -1;
-    }*/
 
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     fcntl(server_socket, F_SETFL, O_NONBLOCK);
@@ -239,9 +256,24 @@ int startServer(char* port){
             if(itsNewClient(connected_clients,connected_client) && acceptNewClient(connected_clients,connected_client, newAddr , &connected_clients_cnt)) {
                 printf("New connection %s:%d\n", inet_ntoa(newAddr.sin_addr), ntohs(newAddr.sin_port));
                 printf("%d Client connected\n", connected_clients_cnt);
+                addObjToCell(getPlayerBySocket(connected_client), getPlayerBySocket(connected_client)->posY, getPlayerBySocket(connected_client)->posX);
+                if (connected_clients_cnt < minClientsToStart)
+                {
+                    g.notifaction = 1;
+                }
+                else if(connected_clients_cnt == minClientsToStart)
+                {
+                    g.notifaction = 2;
 
-                send(connected_client,serverMap, sizeof(serverMap),0);
+                }
+                else
+                {
+                    g.notifaction = 0;
+                }
+                    
 
+                //send(connected_client,&g, sizeof(g),0);
+                notificateAllClients();
                 if(connected_clients_cnt < serverConfig.allowedClientsCount) {
                     printf("%d Slot still available\n", serverConfig.allowedClientsCount-connected_clients_cnt);
                 }

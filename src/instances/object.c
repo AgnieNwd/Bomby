@@ -36,6 +36,7 @@ Object *generateNewObject(int typeId, int y, int x){
     obj->last = obj;
     obj->size = 0;
     obj->next = NULL;
+    obj->alive = 1;
     switch (typeId)
     {
         case 0:

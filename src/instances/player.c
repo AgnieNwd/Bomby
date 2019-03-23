@@ -11,6 +11,11 @@
 
 void playerInterfaceController(Object *player , char key)
 {
+    if(player->alive==0)
+    {
+        return;
+    }
+
     pthread_t thread;
     switch(key)
     {
@@ -48,20 +53,27 @@ void movePlayerToCell(Object *player,int y, int x){
 }
 
 
-bool canPlayerMoveToCell(Object *player, int y, int x) {
+int canPlayerMoveToCell(Object *player, int y, int x) {
 
     if(!player)
-        return false;
+        return 0;
     Object *currentCell = getCell(y,x);
     Object *currentObject = currentCell;
     while(currentObject->next){
         Object *tmp = currentObject->next;
         if(tmp->type == WALL || tmp->type == BLOCK){;
-            return false;
+            return 0;
         }
         currentObject = tmp;
 
     }
-    return true;
+    return 1;
 }
 
+char* convertScore(int score)
+{
+    char mess[40] ;
+    snprintf(mess, 40,"Score : %d", score);
+    char *src = &mess[0];
+    return src;
+}

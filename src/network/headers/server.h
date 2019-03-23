@@ -4,6 +4,7 @@
 
 #ifndef BOMBERMAN_NETWORK_H
 #define BOMBERMAN_NETWORK_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,6 +16,7 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include "../../instances/headers/object.h"
+#include "../../instances/headers/player.h"
 
 struct{
     int allowedClientsCount;
@@ -33,7 +35,18 @@ typedef struct client_s {
     int socket;
     struct sockaddr_in client_address;
 }Client;
+
+typedef struct game_info_s {
+    int score;
+    char map[10][10];
+    int notifaction;
+
+} game_info_t;
+
 int startServer(char* port);
 void notificateAllClients();
 void setCellInServerMap(int y , int x, char ch);
+void initPlayerScore(Object* player);
+void checkGameOver();
+
 #endif //BOMBERMAN_NETWORK_H

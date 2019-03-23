@@ -20,7 +20,6 @@ void * runServer(void *args){
 void runClient(ConnectionProps* param) {
     gameInit();
     startClient(param->port, param->ip);
-    gameDestroy();
 }
 
 int main(){

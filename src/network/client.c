@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include "../gui/headers/gui.h"
+#include "../network/headers/client.h"
 #include "headers/client.h"
 
 clientNetworkParams* getClientParams()
@@ -33,7 +34,7 @@ clientNetworkParams* getClientParams()
     return cParams;
 }
 
-
+int runGame = 1;
 static int mysocket = -1;
 struct sockaddr_in server;
 struct timespec ts = {2, 0 };
@@ -64,15 +65,23 @@ int connectToServer(){
 }
 
 
+
 void * sendPacketToServer()
 {
-   while(1) {
+   while(runGame) {
 
 
         char action[1];
        memset(action, '\n', sizeof(action));
         action[0] = getPressedKey();
         if (action[0] != 10) {
+
+            if (action[0] == 'p')
+            {
+                gameDestroy();
+                runGame=0;
+                pthread_exit(0);
+            }
             if (send(mysocket, action, sizeof(action), 0) < 0) {
                 puts("[-] send failed\n");
                 close(mysocket);
@@ -82,11 +91,11 @@ void * sendPacketToServer()
     }
     return 0;
 }
-
+game_info_t g;
 void * readServerPacket()
 {
-    char mapFromServer[10][10];
-    while (1)
+    //char mapFromServer[10][10];
+    while (runGame)
     {
 
         if (recv(mysocket, mapFromServer, sizeof(mapFromServer), MSG_WAITALL) <= 0) {
@@ -98,10 +107,10 @@ void * readServerPacket()
                 break;
             }
         }
-        char *p = &mapFromServer[0][0];
-        printGraphicMap(p);
-        memset(mapFromServer, '\n', sizeof(mapFromServer));
+        printGraphicMap(g);
+        memset(&g, '\n', sizeof(g));
     }
+
     return 0;
 }
 
@@ -143,5 +152,6 @@ int startClient(char* port,char *ip)
    pthread_join(threadSender,NULL);
 
    close(mysocket);
+    printf("exit \n");
     return 0;
 }
