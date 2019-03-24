@@ -17,22 +17,6 @@
 #include "../network/headers/client.h"
 #include "headers/client.h"
 
-clientNetworkParams* getClientParams()
-{
-    static clientNetworkParams * cParams = NULL;
-
-    if(cParams==NULL)
-    {
-        cParams->socket=-1;
-        cParams->times.tv_sec = 3;
-        cParams->times.tv_nsec = 0;
-        //Initialization by default
-        cParams->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-        cParams->serverAddr.sin_port = htons(atoi("1234"));
-        cParams->serverAddr.sin_family = AF_INET;
-    }
-    return cParams;
-}
 
 int runGame = 1;
 static int mysocket = -1;
@@ -94,11 +78,10 @@ void * sendPacketToServer()
 game_info_t g;
 void * readServerPacket()
 {
-    //char mapFromServer[10][10];
     while (runGame)
     {
 
-        if (recv(mysocket, mapFromServer, sizeof(mapFromServer), MSG_WAITALL) <= 0) {
+        if (recv(mysocket, &g, sizeof(g), MSG_WAITALL) <= 0) {
             puts("loose connection, try to reconnect...\n");
             if(connectToServer()!=0)
             {
