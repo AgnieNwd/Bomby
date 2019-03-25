@@ -15,7 +15,6 @@ void playerInterfaceController(Object *player , char key)
     {
         return;
     }
-
     pthread_t thread;
     switch(key)
     {
@@ -32,7 +31,8 @@ void playerInterfaceController(Object *player , char key)
             movePlayerToCell(player,player->posY , player->posX-1);
             break;
         case 'b':
-            if (pthread_create(&thread, NULL, playerPlaintTheBomb, player) != 0) {
+            if (pthread_create(&thread, NULL, playerPlaintTheBomb, player) != 0)
+            {
                 printf("main error: can't create thread \n");
             }
             break;
@@ -43,7 +43,8 @@ void playerInterfaceController(Object *player , char key)
 
 }
 
-void movePlayerToCell(Object *player,int y, int x){
+void movePlayerToCell(Object *player,int y, int x)
+{
     if(canPlayerMoveToCell(player,y,x))
     {
         removeObjFromCell(player,player->posY,player->posX);
@@ -52,20 +53,22 @@ void movePlayerToCell(Object *player,int y, int x){
 
 }
 
-
-int canPlayerMoveToCell(Object *player, int y, int x) {
-
+int canPlayerMoveToCell(Object *player, int y, int x)
+{
     if(!player)
+    {
         return 0;
+    }
     Object *currentCell = getCell(y,x);
     Object *currentObject = currentCell;
-    while(currentObject->next){
+    while(currentObject->next)
+    {
         Object *tmp = currentObject->next;
-        if(tmp->type == WALL || tmp->type == BLOCK){;
+        if(tmp->type == WALL || tmp->type == BLOCK)
+        {
             return 0;
         }
         currentObject = tmp;
-
     }
     return 1;
 }

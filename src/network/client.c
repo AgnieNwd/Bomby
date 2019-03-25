@@ -22,51 +22,48 @@ int runGame = 1;
 static int mysocket = -1;
 struct sockaddr_in server;
 struct timespec ts = {2, 0 };
+game_info_t infoGame;
 
-int connectToServer(){
-
-
+int connectToServer()
+{
     for(int i=0;i<3;i++)
     {
         printf("[~] try to connect to server  \n");
-
-        if (connect(mysocket, (struct sockaddr *)&server, sizeof(server)) >= 0) {
-
+        if (connect(mysocket, (struct sockaddr *)&server, sizeof(server)) >= 0)
+        {
             return 0;
         }
         printf("[~] connection failed, i try again  \n");
         nanosleep(&ts,NULL);
         close(mysocket);
         mysocket = socket(AF_INET, SOCK_STREAM, 0);
-        if (mysocket < 0) {
+        if (mysocket < 0)
+        {
             perror("socket()");
             return -1;
         }
-
     }
     printf("[~] i cant connect after try 3 times. Maybe server is down? \n");
     return 1;
 }
 
-
-
 void * sendPacketToServer()
 {
-   while(runGame) {
-
-
+   while(runGame)
+   {
         char action[1];
-       memset(action, '\n', sizeof(action));
+        memset(action, '\n', sizeof(action));
         action[0] = getPressedKey();
-        if (action[0] != 10) {
-
+        if (action[0] != 10)
+        {
             if (action[0] == 'p')
             {
                 gameDestroy();
                 runGame=0;
                 pthread_exit(0);
             }
-            if (send(mysocket, action, sizeof(action), 0) < 0) {
+            if (send(mysocket, action, sizeof(action), 0) < 0)
+            {
                 puts("[-] send failed\n");
                 close(mysocket);
                 break;
@@ -75,13 +72,13 @@ void * sendPacketToServer()
     }
     return 0;
 }
-game_info_t g;
+
 void * readServerPacket()
 {
     while (runGame)
     {
-
-        if (recv(mysocket, &g, sizeof(g), MSG_WAITALL) <= 0) {
+        if (recv(mysocket, &infoGame, sizeof(infoGame), MSG_WAITALL) <= 0)
+        {
             puts("loose connection, try to reconnect...\n");
             if(connectToServer()!=0)
             {
@@ -90,25 +87,20 @@ void * readServerPacket()
                 break;
             }
         }
-        printGraphicMap(g);
-        memset(&g, '\n', sizeof(g));
+        printGraphicMap(infoGame);
+        memset(&infoGame, '\n', sizeof(infoGame));
     }
-
     return 0;
 }
 
-
 int startClient(char* port,char *ip)
 {
-
-
-
     mysocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (mysocket < 0) {
+    if (mysocket < 0)
+    {
         perror("socket()");
         return -1;
     }
-
     server.sin_addr.s_addr = inet_addr(ip);
     server.sin_port = htons(atoi(port));
     server.sin_family = AF_INET;
@@ -120,21 +112,19 @@ int startClient(char* port,char *ip)
     }
 
     printf("[+] connected to server  \n");
-
     pthread_t threadReceiver;
-    if (pthread_create(&threadReceiver, NULL, readServerPacket, NULL) != 0) {
+    if (pthread_create(&threadReceiver, NULL, readServerPacket, NULL) != 0)
+    {
         printf("main error: can't create receiver thread \n");
     }
-
     pthread_t threadSender;
-    if (pthread_create(&threadSender, NULL, sendPacketToServer, NULL) != 0) {
+    if (pthread_create(&threadSender, NULL, sendPacketToServer, NULL) != 0)
+    {
         printf("main error: can't create sender thread \n");
     }
-
-   pthread_join(threadReceiver,NULL);
-   pthread_join(threadSender,NULL);
-
-   close(mysocket);
+    pthread_join(threadReceiver,NULL);
+    pthread_join(threadSender,NULL);
+    close(mysocket);
     printf("exit \n");
     return 0;
 }

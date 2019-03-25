@@ -9,9 +9,6 @@
 #include "headers/cell.h"
 #include "../network/headers/server.h"
 
-void newCell(int mapParam,  int pY ,int pX);
-
-
 int configMap[10][10] = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 0, 0, 0, 2, 0, 2, 0, 0, 1},
@@ -24,54 +21,30 @@ int configMap[10][10] = {
         {1, 0, 0, 2, 2, 0, 2, 0, 0, 1},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
-
-/*
-char **getCharMap(){
-    static char **map =NULL;
-    if(map==NULL)
-    {
-        map = (char**)calloc(10, sizeof(char**));
-        for(int y = 0; y < 10; y++) {
-            map[y] = calloc(10, sizeof(char*));
-            for (int x = 0; x < 10; x++)
-            {
-                map[y][x]='0';
-            }
-        }
-    }
-    return map;
-}
-
-void setCellInCharMap(int y , int x, char ch){
-    char **arr = getCharMap();
-    arr[y][x] = ch;
-}
-*/
-
-Map *getMapInstance(){
+Map *getMapInstance()
+{
     static Map *gameMap = NULL;
-    if(gameMap == NULL){
+    if(gameMap == NULL)
+    {
         gameMap = malloc(sizeof(Map));
         gameMap -> mapSizeY = 10;
         gameMap -> mapSizeX = 10;
         gameMap -> cells = calloc(gameMap -> mapSizeX, sizeof(Object**)); // 10 == X dimension
-
         for(int y = 0; y<gameMap -> mapSizeX; y++)
         {
             gameMap -> cells[y] = calloc(gameMap -> mapSizeY,sizeof(Object));
         }
     }
-
     return gameMap;
 }
 
-void initMapByObjects(){
+void initMapByObjects()
+{
     for(int y = 0; y < 10; y++)
     {
         for(int x = 0; x < 10;x++)
         {
             newCell(0,y,x);
-
             if(configMap[y][x]>0)
             {
                 Object *tmp =  generateNewObject(configMap[y][x], y,x);
@@ -153,8 +126,8 @@ void printConsoleMap(){
 }
 
 
-char getCharFromInt(int intValue){
-
+char getCharFromInt(int intValue)
+{
     char charValue = 'z'; //z undefined
     switch (intValue)
     {
@@ -205,7 +178,6 @@ char getCharFromInt(int intValue){
         default:
             charValue = 'z';
             break;
-
     }
     return charValue;
 }

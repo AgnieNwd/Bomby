@@ -6,7 +6,8 @@
 #include "headers/map.h"
 #include "../network/headers/server.h"
 
-Object *getCell(int y, int x){
+Object *getCell(int y, int x)
+{
     Map *map = getMapInstance();
     Object *cell = &map->cells[y][x];
     return cell;

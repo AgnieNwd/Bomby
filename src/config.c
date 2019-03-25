@@ -4,12 +4,11 @@
 
 #include "config.h"
 
-void initConfigs(){
-
+void initConfigs()
+{
     gameConfig.GAME_RUNNING = 0;
     gameConfig.maxClients = 4;
     gameConfig.mapSizeY = 10;
     gameConfig.mapSizeX = 10;
-
     playerConfig.maxBombsCnt = 1;
 }

@@ -11,6 +11,7 @@ void init_co()
     param->port =NULL;
 }
 
-void error(char *message) {
+void error(char *message)
+{
     printf("Vous avez fait une erreur : %s", message);
 }

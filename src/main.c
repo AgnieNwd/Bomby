@@ -9,7 +9,8 @@
 #include "gui/headers/menu_gui.h"
 
 
-void * runServer(void *args){
+void * runServer(void *args)
+{
     ConnectionProps *param = (ConnectionProps*) args;
     initMutex();
     startServer(param->port);
@@ -17,13 +18,14 @@ void * runServer(void *args){
     return 0;
 }
 
-void runClient(ConnectionProps* param) {
+void runClient(ConnectionProps* param)
+{
     gameInit();
     startClient(param->port, param->ip);
 }
 
-int main(){
-
+int main()
+{
     Menu *mainMenu = main_menu();
     ConnectionProps* param = (ConnectionProps*)malloc(sizeof(ConnectionProps));
     param = choiceMode(mainMenu);
@@ -33,22 +35,18 @@ int main(){
         destroyMenu(mainMenu);
         runClient(param);
     }
-
     if (mainMenu->choice == 2)
     {
         SDL_HideWindow(mainMenu->Window);
         destroyMenu(mainMenu);
         pthread_t server;
-
-        if (pthread_create(&server, NULL, runServer, param) != 0) {
+        if (pthread_create(&server, NULL, runServer, param) != 0)
+        {
             printf("main error: can't create sender thread \n");
         }
-
         runClient(param);
         pthread_join(server,NULL);
     }
-
-
 }
 
 

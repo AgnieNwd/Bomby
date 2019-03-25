@@ -15,7 +15,6 @@ Menu* main_menu()
     menu->choice = 0;
     menu->ifIP = 0;
     menu->error = 0;
-
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
     menu->Window = SDL_CreateWindow("Menu",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,SCREEN_WIDTH,SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
@@ -28,7 +27,8 @@ Menu* main_menu()
             destroyMenu(menu);
             exit(1);
         }
-    } else {
+    } else
+    {
         fprintf(stderr, "Impossible de créer le fenetre SDL : %s\n", SDL_GetError());
         destroyMenu(menu);
         exit(1);
@@ -59,9 +59,8 @@ Menu* main_menu()
     return menu;
 }
 
-void showMenu(Menu* menu)
-{
-    SDL_Texture* txt= NULL;
+void showMenu(Menu* menu) {
+    SDL_Texture *txt = NULL;
 
     SDL_RenderClear(menu->Renderer);
     SDL_RenderCopy(menu->Renderer, menu->menuTilset, NULL, &menu->MenuSize);
@@ -73,19 +72,24 @@ void showMenu(Menu* menu)
         showText(txt, menu->Renderer, "Join a game", 40, 100);
         showText(txt, menu->Renderer, "Host a game", 40, 170);
         SDL_RenderCopy(menu->Renderer, menu->cursorBomb, NULL, &menu->cursor);
-    } else if(menu->choice == 1)// rejoindre une game
+    } else if (menu->choice == 1)// rejoindre une game
     {
         showText(txt, menu->Renderer, "IP address : ", 40, 100);
         showText(txt, menu->Renderer, "Port : ", 40, 170);
-        if(menu->ifIP == 1) // correctif d'un affichage bug de l'ip
+        if (menu->ifIP == 1) { // correctif d'un affichage bug de l'ip
             showText(txt, menu->Renderer, "127.0.0.1", 200, 100);
-    } else
+        }
+    } else {
         showText(txt, menu->Renderer, "Port : ", 40, 170);
+    }
     //gestion erreur
     if (menu->error == 1)
-        showText(txt, menu->Renderer, "Mauvais IP",0 , 350);
-    else if (menu->error == 2)
-        showText(txt, menu->Renderer, "Mauvais Port",0 , 350);
+    {
+        showText(txt, menu->Renderer, "Mauvais IP", 0, 350);
+    } else if (menu->error == 2)
+    {
+        showText(txt, menu->Renderer, "Mauvais Port", 0, 350);
+    }
     SDL_RenderPresent(menu->Renderer);
 }
 
@@ -98,14 +102,12 @@ void showText(SDL_Texture* txt, SDL_Renderer* Renderer, char* mess, int x, int y
     SDL_Rect position;
 
     TTF_Font* police = TTF_OpenFont("./images/OpenSans-Regular.ttf", font_size);
-
     surface_text = TTF_RenderText_Solid(police, mess, normalColor);
     if(!surface_text)
     {
         fprintf(stdout,"Échec de chargement du texte (%s)\n",SDL_GetError());
         gameDestroy();
     }
-
     TTF_CloseFont(police);
 
     txt = SDL_CreateTextureFromSurface(Renderer, surface_text);
@@ -116,7 +118,6 @@ void showText(SDL_Texture* txt, SDL_Renderer* Renderer, char* mess, int x, int y
     }
 
     int txtWidth, txtHeigth;
-
     // Récupère la longueur et hauteur de la texture
     SDL_QueryTexture(txt, NULL, NULL, &txtWidth, &txtHeigth);
 
@@ -136,22 +137,28 @@ ConnectionProps* choiceMode(Menu* menu)
     SDL_Event e;
     showMenu(menu);
     Mix_PlayMusic(menu->musique, -1);
-    while(result != 1) {
+    while(result != 1)
+    {
         if(SDL_PollEvent(&e))
         {
             if (e.type == SDL_QUIT)
+            {
                 result = 1;
-            else if (e.type == SDL_KEYDOWN) {
-                switch (e.key.keysym.sym) {
+            } else if (e.type == SDL_KEYDOWN)
+            {
+                switch (e.key.keysym.sym)
+                {
                     case SDLK_ESCAPE :
                         result = 1;
                         break;
                     case SDLK_RETURN :
                         Mix_PlayChannel(-1, menu->laser, 0);
-                        if (menu->cursor.y == 100) {
+                        if (menu->cursor.y == 100)
+                        {
                             menu->choice = 1;
                             menu->ifIP = 0;
-                        } else if (menu->cursor.y == 170) {
+                        } else if (menu->cursor.y == 170)
+                        {
                             menu->choice = 2;
                             menu->ifIP = 1;
                         }
@@ -168,7 +175,9 @@ ConnectionProps* choiceMode(Menu* menu)
         SDL_Delay(20);
         showMenu(menu);
         if(menu->choice != 0)
+        {
             result = initParam(menu, param);
+        }
     }
     return param;
 }

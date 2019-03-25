@@ -13,6 +13,8 @@ typedef struct  {
     int mapSizeX;
     Object **cells;
 }Map;
+
+void newCell(int mapParam,  int pY ,int pX);
 char getCharFromInt(int intValue);
 char **getCharMap();
 void setCellInCharMap(int y , int x, char ch);
