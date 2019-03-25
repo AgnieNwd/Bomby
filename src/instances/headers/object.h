@@ -6,11 +6,12 @@
 #define BOMBERMAN_OBJECT_H
 
 
-typedef enum{
+typedef enum {
     CELL,   // 0
     WALL,   // 2
     BOMB,   // 3
     OBJECT, // 4
+    BONUS,  // 5
     PLAYER, // 11,12,13,14
     EXPLOSION, // 21,22,23,24
     BLOCK,  // 99

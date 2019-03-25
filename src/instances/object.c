@@ -27,8 +27,7 @@ void destroyMutex()
 
 Object *generateNewObject(int typeId, int y, int x)
 {
-    if(y < 0 || y > getMapInstance()->mapSizeY || x < 0 || x > getMapInstance()->mapSizeX)
-    {
+    if(y < 0 || y > getMapInstance()->mapSizeY || x < 0 || x > getMapInstance()->mapSizeX) {
         return NULL;
     }
     Object *obj = (Object*)malloc(sizeof(Object));
@@ -39,26 +38,24 @@ Object *generateNewObject(int typeId, int y, int x)
     obj->size = 0;
     obj->next = NULL;
     obj->alive = 1;
-    switch (typeId)
-    {
+    switch (typeId) {
         case 0:
             obj->type = CELL;
             obj->size = 0;
             break;
-
         case 1:
             obj->type = BLOCK;
             obj->textureId = 99;
             break;
-
         case 2:
             obj->type = WALL;
             break;
-
         case 3:
             obj->type = BOMB;
             break;
-
+        case 5:
+            obj->type = BONUS;
+            break;
         case 11:
             obj->type = PLAYER;
             obj->bombsCnt = 0;
@@ -79,7 +76,6 @@ Object *generateNewObject(int typeId, int y, int x)
             obj->bombsCnt = 0;
             obj->id = 4;
             break;
-
         case 21:
         case 22:
         case 23:
@@ -96,7 +92,6 @@ Object *generateNewObject(int typeId, int y, int x)
     return obj;
 }
 
-
 void addObjToCell(Object *obj,int y, int x)
 {
     Object *targetCell = getCell(y, x);
@@ -104,26 +99,20 @@ void addObjToCell(Object *obj,int y, int x)
     Object *current = targetCell->next;
     obj->posY = targetCell->posY;
     obj->posX = targetCell->posX;
-    if(current!=NULL)
-    {
-        while(current->next!=NULL)
-        {
+    if(current!=NULL) {
+        while(current->next!=NULL) {
             Object *tmp = current->next;
-            if(tmp->textureId < obj ->textureId)
-            {
+            if(tmp->textureId < obj ->textureId) {
                 break;
             }
             current = tmp;
         }
-        if(current!=NULL)
-        {
+        if(current!=NULL) {
             Object *tmp = current->next;
             current->next = obj;
             obj->next = tmp;
-
         }
-    } else
-    {
+    } else {
         targetCell->next = obj;
     }
 
@@ -132,13 +121,12 @@ void addObjToCell(Object *obj,int y, int x)
     pthread_mutex_unlock(&addObjMutex);
 }
 
-Object * getProritaryAppairanceByObject(Object *cell){
+Object * getProritaryAppairanceByObject(Object *cell)
+{
     Object *highter = cell;
     Object *current = cell->next;
-    while(current)
-    {
-        if(current->textureId > highter->textureId)
-        {
+    while(current) {
+        if(current->textureId > highter->textureId) {
             highter = current;
         }
         Object *tmp = current->next;
@@ -148,27 +136,20 @@ Object * getProritaryAppairanceByObject(Object *cell){
     return highter;
 }
 
-void removeObjFromCell(Object *obj,int y, int x)
-{
-    if(obj==NULL)
-    {
+void removeObjFromCell(Object *obj,int y, int x) {
+    if(obj == NULL) {
         return;
     }
     Object *targetCell = getCell(y, x);
     pthread_mutex_lock(&rmvObjMutex);
     Object *current = targetCell;
-    if(current->next)
-    {
-        while (current->next != NULL)
-        {
+    if(current->next) {
+        while (current->next != NULL) {
             Object *tmp = current->next;
-            if (tmp == obj)
-            {
-                if (tmp->next != NULL)
-                {
+            if (tmp == obj) {
+                if (tmp->next != NULL) {
                     current->next = obj->next;
-                } else
-                {
+                } else {
                     current->next = NULL;
                 }
                 obj->next = NULL;

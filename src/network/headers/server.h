@@ -17,12 +17,13 @@
 #include <fcntl.h>
 #include "../../instances/headers/object.h"
 #include "../../instances/headers/player.h"
+#include "../../instances/headers/map.h"
 
-struct{
+struct {
     int allowedClientsCount;
 }serverConfig;
 
-enum NETWORK_STATUS{
+enum NETWORK_STATUS {
     CONNECTED,
     DISCONNECTED
 
@@ -38,7 +39,7 @@ typedef struct client_s {
 
 typedef struct game_info_s {
     int score;
-    char map[10][10];
+    char map[MAPY][MAPX];
     int notifaction;
 
 } game_info_t;

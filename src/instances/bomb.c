@@ -20,8 +20,7 @@ void * playerPlaintTheBomb(void *args)
     animation.tv_sec = 0;
     animation.tv_nsec = 250;
     Object *player = (Object*) args;
-    if(player->bombsCnt>0)
-    {
+    if(player->bombsCnt>0) {
         return 0;
     }
     player->bombsCnt+=1;
@@ -30,28 +29,23 @@ void * playerPlaintTheBomb(void *args)
     int positionYParams[5] = {0,-1,1,0,0};
     int positionXParams[5] = {0,0,0,-1,1};
 
-    for(int i=0;i<5;i++)
-    {
+    for(int i=0;i<5;i++) {
         bombs[i] = generateNewObject(showParams[i],player->posY+positionYParams[i],player->posX+positionXParams[i]);
     }
     addObjToCell(bombs[0],bombs[0]->posY,bombs[0]->posX);
     sleep(1);
     bombs[0]->textureId = 20;
     getCell(bombs[0]->posY,bombs[0]->posX)->last = getProritaryAppairanceByObject(getCell(bombs[0]->posY,bombs[0]->posX));
-    for(int i=1;i<5;i++)
-    {
-        if(bombs[i]!=NULL)
-        {
+    for(int i=1;i<5;i++) {
+        if(bombs[i] != NULL) {
             addObjToCell(bombs[i],bombs[i]->posY,bombs[i]->posX);
         }
     }
     printMaps();
     notificateAllClients();
     nanosleep(&animation , NULL);
-    for(int i=0;i<5;i++)
-    {
-        if(bombs[i]!=NULL)
-        {
+    for(int i=0; i<5; i++) {
+        if(bombs[i]!=NULL) {
             explose(bombs[i], player);
             removeObjFromCell(bombs[i], bombs[i]->posY, bombs[i]->posX);
             free(bombs[i]);
@@ -70,21 +64,16 @@ void explose(Object *explosion, Object *bombOwner)
 
     pthread_mutex_lock(&exploseBombMutex);
     Object *current = targetCell;
-    if(current->next)
-    {
-        while (current->next != NULL)
-        {
+    if(current->next) {
+        while (current->next != NULL) {
             Object *tmp = current->next;
-            if(current->type != BLOCK && current->type != CELL && current != explosion)
-            {
+            if(current->type != BLOCK && current->type != CELL && current != explosion) {
                 removeObjFromCell(current,current->posY,current->posX);
-                if(current->type == PLAYER)
-                {
+                if(current->type == PLAYER) {
                     bombOwner->score++;
                     current->alive = 0;
                     checkGameOver();
-                } else
-                {
+                } else {
                     free(current);
                 }
             }

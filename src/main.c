@@ -29,24 +29,19 @@ int main()
     Menu *mainMenu = main_menu();
     ConnectionProps* param = (ConnectionProps*)malloc(sizeof(ConnectionProps));
     param = choiceMode(mainMenu);
-    if(mainMenu->choice == 1)
-    {
+    if(mainMenu->choice == 1) {
         SDL_HideWindow(mainMenu->Window);
         destroyMenu(mainMenu);
         runClient(param);
     }
-    if (mainMenu->choice == 2)
-    {
+    if (mainMenu->choice == 2) {
         SDL_HideWindow(mainMenu->Window);
         destroyMenu(mainMenu);
         pthread_t server;
-        if (pthread_create(&server, NULL, runServer, param) != 0)
-        {
+        if (pthread_create(&server, NULL, runServer, param) != 0) {
             printf("main error: can't create sender thread \n");
         }
         runClient(param);
         pthread_join(server,NULL);
     }
 }
-
-

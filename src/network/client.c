@@ -26,19 +26,16 @@ game_info_t infoGame;
 
 int connectToServer()
 {
-    for(int i=0;i<3;i++)
-    {
+    for(int i=0;i<3;i++) {
         printf("[~] try to connect to server  \n");
-        if (connect(mysocket, (struct sockaddr *)&server, sizeof(server)) >= 0)
-        {
+        if (connect(mysocket, (struct sockaddr *)&server, sizeof(server)) >= 0) {
             return 0;
         }
         printf("[~] connection failed, i try again  \n");
         nanosleep(&ts,NULL);
         close(mysocket);
         mysocket = socket(AF_INET, SOCK_STREAM, 0);
-        if (mysocket < 0)
-        {
+        if (mysocket < 0) {
             perror("socket()");
             return -1;
         }
@@ -49,21 +46,17 @@ int connectToServer()
 
 void * sendPacketToServer()
 {
-   while(runGame)
-   {
+   while(runGame) {
         char action[1];
         memset(action, '\n', sizeof(action));
         action[0] = getPressedKey();
-        if (action[0] != 10)
-        {
-            if (action[0] == 'p')
-            {
+        if (action[0] != 10) {
+            if (action[0] == 'p') {
                 gameDestroy();
                 runGame=0;
                 pthread_exit(0);
             }
-            if (send(mysocket, action, sizeof(action), 0) < 0)
-            {
+            if (send(mysocket, action, sizeof(action), 0) < 0) {
                 puts("[-] send failed\n");
                 close(mysocket);
                 break;
@@ -75,13 +68,10 @@ void * sendPacketToServer()
 
 void * readServerPacket()
 {
-    while (runGame)
-    {
-        if (recv(mysocket, &infoGame, sizeof(infoGame), MSG_WAITALL) <= 0)
-        {
+    while (runGame) {
+        if (recv(mysocket, &infoGame, sizeof(infoGame), MSG_WAITALL) <= 0) {
             puts("loose connection, try to reconnect...\n");
-            if(connectToServer()!=0)
-            {
+            if(connectToServer()!=0) {
                 perror("connect()");
                 puts("readServerPacket server down...\n");
                 break;
@@ -96,8 +86,7 @@ void * readServerPacket()
 int startClient(char* port,char *ip)
 {
     mysocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (mysocket < 0)
-    {
+    if (mysocket < 0) {
         perror("socket()");
         return -1;
     }
@@ -105,21 +94,18 @@ int startClient(char* port,char *ip)
     server.sin_port = htons(atoi(port));
     server.sin_family = AF_INET;
 
-    if(connectToServer()!=0)
-    {
+    if(connectToServer()!=0) {
         perror("connect()");
         return 1;
     }
 
     printf("[+] connected to server  \n");
     pthread_t threadReceiver;
-    if (pthread_create(&threadReceiver, NULL, readServerPacket, NULL) != 0)
-    {
+    if (pthread_create(&threadReceiver, NULL, readServerPacket, NULL) != 0) {
         printf("main error: can't create receiver thread \n");
     }
     pthread_t threadSender;
-    if (pthread_create(&threadSender, NULL, sendPacketToServer, NULL) != 0)
-    {
+    if (pthread_create(&threadSender, NULL, sendPacketToServer, NULL) != 0) {
         printf("main error: can't create sender thread \n");
     }
     pthread_join(threadReceiver,NULL);

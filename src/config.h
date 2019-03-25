@@ -4,7 +4,8 @@
 
 #ifndef BOMBERMAN_CONFIG_H
 #define BOMBERMAN_CONFIG_H
- struct {
+
+struct {
     int GAME_RUNNING;
     int maxClients;
     int mapSizeY;
