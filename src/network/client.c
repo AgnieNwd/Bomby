@@ -17,6 +17,12 @@
 #include "../network/headers/client.h"
 #include "headers/client.h"
 
+int runGame = 1;
+static int mysocket = -1;
+struct sockaddr_in server;
+struct timespec ts = {2, 0 };
+game_info_t infoGame;
+
 clientNetworkParams* getClientParams()
 {
     static clientNetworkParams * cParams = NULL;
@@ -34,10 +40,6 @@ clientNetworkParams* getClientParams()
     return cParams;
 }
 
-int runGame = 1;
-static int mysocket = -1;
-struct sockaddr_in server;
-struct timespec ts = {2, 0 };
 
 int connectToServer(){
 
@@ -91,14 +93,13 @@ void * sendPacketToServer()
     }
     return 0;
 }
-game_info_t g;
+
 void * readServerPacket()
 {
-    //char mapFromServer[10][10];
     while (runGame)
     {
 
-        if (recv(mysocket, mapFromServer, sizeof(mapFromServer), MSG_WAITALL) <= 0) {
+        if (recv(mysocket, &infoGame, sizeof(infoGame), MSG_WAITALL) <= 0) {
             puts("loose connection, try to reconnect...\n");
             if(connectToServer()!=0)
             {
@@ -107,8 +108,8 @@ void * readServerPacket()
                 break;
             }
         }
-        printGraphicMap(g);
-        memset(&g, '\n', sizeof(g));
+        printGraphicMap(infoGame);
+        memset(&infoGame, '\n', sizeof(infoGame));
     }
 
     return 0;
