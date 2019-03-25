@@ -33,7 +33,7 @@ typedef struct str_obj {
     int posW;
     int posH;
     int bombsCnt;
-    //score du joueur
+    //joueur
     int score;
     int alive;
 }Object;

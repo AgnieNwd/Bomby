@@ -72,11 +72,3 @@ int canPlayerMoveToCell(Object *player, int y, int x)
     }
     return 1;
 }
-
-char* convertScore(int score)
-{
-    char mess[40] ;
-    snprintf(mess, 40,"Score : %d", score);
-    char *src = &mess[0];
-    return src;
-}

@@ -72,7 +72,6 @@ Game * gameInit()
 
 void printGraphicMap(game_info_t infoGame)
 {
-
     Game *game = getGame();
     SDL_RenderClear(game->renderer);
     SDL_Texture* txt = NULL;
@@ -98,7 +97,6 @@ void printGraphicMap(game_info_t infoGame)
             SDL_RenderCopy(game->renderer, getTextureByCharValue(value), &r_src, &r_dest);
         }
     }
-    
     showText(txt, game->renderer, notif[infoGame.notifaction], 200, 200);
     showText(txt, game->renderer, mess, 50, 480);
     SDL_RenderPresent(game->renderer);
