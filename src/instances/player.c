@@ -68,6 +68,12 @@ int canPlayerMoveToCell(Object *player, int y, int x)
         {
             return 0;
         }
+        if(tmp->type == BONUS)
+        {
+            player->bombsCnt=-1;
+            removeObjFromCell(tmp,tmp->posY,tmp->posX);
+            return 1;
+        }
         currentObject = tmp;
     }
     return 1;

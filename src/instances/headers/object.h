@@ -8,6 +8,7 @@
 
 typedef enum{
     CELL,   // 0
+    BONUS,   // 5
     WALL,   // 2
     BOMB,   // 3
     OBJECT, // 4
@@ -42,7 +43,7 @@ typedef struct str_obj {
 
 
 Object * getProritaryAppairanceByObject(Object *cell);
-Object *generateNewObject(int obj, int x, int y);
+Object *generateNewObject(int obj, int y, int x);
 void initMutex();
 void destroyMutex();
 

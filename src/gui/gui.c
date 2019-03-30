@@ -112,6 +112,7 @@ SDL_Texture * getTextureByCharValue(char value)
         case 'X'://BLOCK
         case '#'://WALL
         case '@'://BOOMB
+        case '?'://BONUS
         case '*'://EXPLOSION
             texture = game->gameTileset;
             break;
@@ -151,6 +152,11 @@ SDL_Rect getRectByCharValue(char value)
 
         case '@'://BOOMB
             result.x = 7 * CELL_TILE_SIZE;
+            result.y = 6 * CELL_TILE_SIZE;
+            break;
+
+        case '?'://BONUS
+            result.x = 0 * CELL_TILE_SIZE;
             result.y = 6 * CELL_TILE_SIZE;
             break;
 

@@ -13,6 +13,7 @@
 pthread_mutex_t addObjMutex;
 pthread_mutex_t rmvObjMutex;
 
+
 void initMutex()
 {
     pthread_mutex_init(&addObjMutex, NULL);
@@ -59,6 +60,10 @@ Object *generateNewObject(int typeId, int y, int x)
             obj->type = BOMB;
             break;
 
+        case 5:
+            obj->type = BONUS;
+            break;
+
         case 11:
             obj->type = PLAYER;
             obj->bombsCnt = 0;
@@ -81,8 +86,17 @@ Object *generateNewObject(int typeId, int y, int x)
             break;
 
         case 21:
+            obj->type = EXPLOSION;
+            obj->id = typeId;
+            break;
         case 22:
+            obj->type = EXPLOSION;
+            obj->id = typeId;
+            break;
         case 23:
+            obj->type = EXPLOSION;
+            obj->id = typeId;
+            break;
         case 24:
             obj->type = EXPLOSION;
             obj->id = typeId;

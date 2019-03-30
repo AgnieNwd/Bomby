@@ -12,7 +12,10 @@
 #include "../network/headers/server.h"
 #include "../gui/headers/gui.h"
 
+
 pthread_mutex_t exploseBombMutex;
+
+void generateBonus(Object *obj);
 
 void * playerPlaintTheBomb(void *args)
 {
@@ -75,21 +78,39 @@ void explose(Object *explosion, Object *bombOwner)
         while (current->next != NULL)
         {
             Object *tmp = current->next;
-            if(current->type != BLOCK && current->type != CELL && current != explosion)
+            if(current->type != BLOCK && current->type != CELL && current != explosion && current->type != EXPLOSION && current->type != BONUS && current->type != BOMB)
             {
+
+                if(current->type == WALL)
+                {
+                    generateBonus(current);
+                }
+
                 removeObjFromCell(current,current->posY,current->posX);
+
                 if(current->type == PLAYER)
                 {
                     bombOwner->score++;
                     current->alive = 0;
                     checkGameOver();
-                } else
+                }
+                else
                 {
                     free(current);
                 }
+
             }
             current = tmp;
         }
     }
    pthread_mutex_unlock(&exploseBombMutex);
+}
+
+void generateBonus(Object *obj) {
+    int r = rand() % 100;
+
+    if(r<40) {
+        Object *bonus  =  generateNewObject(5, obj->posY, obj->posX);
+        addObjToCell(bonus, bonus->posY, bonus->posX);
+    }
 }

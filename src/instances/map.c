@@ -147,6 +147,10 @@ char getCharFromInt(int intValue)
             charValue = 'z';
             break;
 
+        case 5:
+            charValue = '?';
+            break;
+
         case 11:
             charValue = 'A';
             break;

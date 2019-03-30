@@ -20,7 +20,7 @@
 static Client connected_clients[4];
 static game_info_t infoGame;
 int gameOver = 0;
-int minClientsToStart = 3;
+int minClientsToStart = 4;
 
 Object * getPlayerBySocket(int sock)
 {
