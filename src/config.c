@@ -3,12 +3,13 @@
 //
 
 #include "config.h"
+#include "instances/headers/map.h"
 
 void initConfigs()
 {
     gameConfig.GAME_RUNNING = 0;
     gameConfig.maxClients = 4;
-    gameConfig.mapSizeY = 10;
-    gameConfig.mapSizeX = 10;
+    gameConfig.mapSizeY = MAPX;
+    gameConfig.mapSizeX = MAPY;
     playerConfig.maxBombsCnt = 1;
 }

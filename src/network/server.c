@@ -105,13 +105,13 @@ void initClients(Client *connected_clients)
                 connected_clients[i].player = generateNewObject(11,1,1);
                 break;
             case 1:
-                connected_clients[i].player = generateNewObject(12,8,8);
+                connected_clients[i].player = generateNewObject(12,13,13);
                 break;
             case 2:
-                connected_clients[i].player = generateNewObject(13,1,8);
+                connected_clients[i].player = generateNewObject(13,1,13);
                 break;
             case 3:
-                connected_clients[i].player = generateNewObject(14,8,1);
+                connected_clients[i].player = generateNewObject(14,13,1);
                 break;
 
             default:

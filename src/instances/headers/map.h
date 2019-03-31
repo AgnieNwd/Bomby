@@ -7,6 +7,8 @@
 
 #include "../../instances/headers/object.h"
 
+#define MAPX 15
+#define MAPY 15
 
 typedef struct  {
     int mapSizeY;
