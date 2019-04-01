@@ -10,14 +10,14 @@
 #include "../instances/headers/cell.h"
 #include "../network/headers/server.h"
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 520
+#define SCREEN_WIDTH 960
+#define SCREEN_HEIGHT 800
 
 #define WIDHT_TILE 100
 #define HEIGHT_TILE 100
 #define CELL_TILE_SIZE 100
-#define WIDTH_CELL_CNT = 10
-#define HEIGHT_CELL_CNT = 10
+#define WIDTH_CELL_CNT = MAPX
+#define HEIGHT_CELL_CNT = MAPY
 
 char notif[5][30] = {
                         " \0 ",
@@ -76,8 +76,8 @@ void printGraphicMap(game_info_t infoGame)
     SDL_RenderClear(game->renderer);
     SDL_Texture* txt = NULL;
     char *map = &infoGame.map[0][0];
-    int lengthX = 10;
-    int lengthY = 10;
+    int lengthX = MAPX;
+    int lengthY = MAPY;
     int cell_tile_height = 48;
     int cell_tile_width = 64;
     char mess[40] ;
@@ -88,7 +88,7 @@ void printGraphicMap(game_info_t infoGame)
     {
         for(int x=0;x<lengthX;x++)
         {
-            char value = map[y + 10 * x];
+            char value = map[y + MAPY * x];
             r_src = getRectByCharValue(value);
             r_dest.x = x*cell_tile_width;
             r_dest.y = y*cell_tile_height;
@@ -97,8 +97,8 @@ void printGraphicMap(game_info_t infoGame)
             SDL_RenderCopy(game->renderer, getTextureByCharValue(value), &r_src, &r_dest);
         }
     }
-    showText(txt, game->renderer, notif[infoGame.notifaction], 200, 200);
-    showText(txt, game->renderer, mess, 50, 480);
+    showText(txt, game->renderer, notif[infoGame.notifaction], 350, 350);
+    showText(txt, game->renderer, mess, 100, 730);
     SDL_RenderPresent(game->renderer);
 }
 
