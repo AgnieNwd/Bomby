@@ -2,7 +2,7 @@
 // Created by Sviatoslav Prylutsky on 2/5/19.
 //
 
-#include <zconf.h>
+#include <time.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include "headers/bomb.h"
@@ -21,7 +21,7 @@ void * playerPlaintTheBomb(void *args)
 {
     struct timespec animation;
     animation.tv_sec = 0;
-    animation.tv_nsec = 250;
+    animation.tv_nsec = 225000000;
     Object *player = (Object*) args;
     if(player->bombsCnt>0)
     {
@@ -51,6 +51,7 @@ void * playerPlaintTheBomb(void *args)
     printMaps();
     notificateAllClients();
     nanosleep(&animation , NULL);
+    //sleep(1);
     for(int i=0;i<5;i++)
     {
         if(bombs[i]!=NULL)

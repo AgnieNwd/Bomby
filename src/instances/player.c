@@ -64,7 +64,7 @@ int canPlayerMoveToCell(Object *player, int y, int x)
     while(currentObject->next)
     {
         Object *tmp = currentObject->next;
-        if(tmp->type == WALL || tmp->type == BLOCK)
+        if(tmp->type == WALL || tmp->type == BLOCK || tmp->type == BOMB)
         {
             return 0;
         }
