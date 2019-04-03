@@ -27,7 +27,7 @@ void runClient(ConnectionProps* param)
 void startMenu()
 {
     Menu *mainMenu = main_menu();
-    ConnectionProps* param = (ConnectionProps*)malloc(sizeof(ConnectionProps));
+    ConnectionProps* param = malloc(sizeof(ConnectionProps));
     param = choiceMode(mainMenu);
     if(mainMenu->choice == 1)
     {
