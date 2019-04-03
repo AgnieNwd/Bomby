@@ -22,8 +22,9 @@ typedef struct {
     SDL_Renderer *renderer;
     SDL_Texture *gameTileset;
     SDL_Texture *playerTileset;
-    Object* player;
 
+    Mix_Music *musique;
+    Mix_Chunk *explosion;
 
 }Game;
 

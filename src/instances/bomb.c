@@ -22,6 +22,7 @@ void * playerPlaintTheBomb(void *args)
     struct timespec animation;
     animation.tv_sec = 0;
     animation.tv_nsec = 225000000;
+    Mix_PlayChannel(-1, getGame()->explosion, 0);
     Object *player = (Object*) args;
     if(player->bombsCnt>0)
     {
@@ -71,7 +72,6 @@ void * playerPlaintTheBomb(void *args)
 void explose(Object *explosion, Object *bombOwner)
 {
     Object *targetCell = getCell(explosion->posY,explosion->posX);
-
     pthread_mutex_lock(&exploseBombMutex);
     Object *current = targetCell;
     if(current->next)
@@ -81,7 +81,6 @@ void explose(Object *explosion, Object *bombOwner)
             Object *tmp = current->next;
             if(current->type != BLOCK && current->type != CELL && current != explosion && current->type != EXPLOSION && current->type != BONUS && current->type != BOMB)
             {
-
                 if(current->type == WALL)
                 {
                     generateBonus(current);

@@ -58,6 +58,9 @@ Game * gameInit()
 
     SDL_Surface *playerImg = IMG_Load("./images/playerTileset.bmp");
     SDL_Surface *gameImg = IMG_Load("./images/gameTileset.bmp");
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+    game->musique = Mix_LoadMUS("./images/game.mp3");
+    game->explosion = Mix_LoadWAV("./images/bomb.wav");
 
     if(!playerImg || !gameImg)
     {
@@ -67,6 +70,7 @@ Game * gameInit()
 
     game->playerTileset = SDL_CreateTextureFromSurface(game->renderer,playerImg);
     game->gameTileset = SDL_CreateTextureFromSurface(game->renderer,gameImg);
+    Mix_PlayMusic(game->musique, -1);
     return game;
 }
 
@@ -82,8 +86,8 @@ void printGraphicMap(game_info_t infoGame)
     int cell_tile_width = 64;
     char mess[40] ;
     snprintf(mess, 40,"Score : %d", infoGame.score);
-
     SDL_Rect r_dest, r_src;
+
     for(int y=0;y<lengthY;y++)
     {
         for(int x=0;x<lengthX;x++)
@@ -206,6 +210,10 @@ void gameDestroy()
     {
         SDL_DestroyTexture(getGame()->playerTileset);
     }
+    if(getGame()->musique)
+    {
+        Mix_FreeMusic(getGame()->musique);
+    }
     if(getGame()->renderer)
     {
         SDL_DestroyRenderer(getGame()->renderer);
@@ -214,6 +222,7 @@ void gameDestroy()
     {
         SDL_DestroyWindow(getGame()->window);
     }
+    Mix_CloseAudio();
     Mix_Quit();
     TTF_Quit();
     SDL_Quit();
