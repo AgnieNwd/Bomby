@@ -24,10 +24,10 @@ void runClient(ConnectionProps* param)
     startClient(param->port, param->ip);
 }
 
-int main()
+void startMenu()
 {
     Menu *mainMenu = main_menu();
-    ConnectionProps* param = (ConnectionProps*)malloc(sizeof(ConnectionProps));
+    ConnectionProps* param = malloc(sizeof(ConnectionProps));
     param = choiceMode(mainMenu);
     if(mainMenu->choice == 1)
     {
@@ -47,6 +47,11 @@ int main()
         runClient(param);
         pthread_join(server,NULL);
     }
+    free(param);
+}
+int main()
+{
+    startMenu();
 }
 
 

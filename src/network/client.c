@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include "../gui/headers/gui.h"
+#include "../gui/headers/menu_gui.h"
 #include "../network/headers/client.h"
 #include "headers/client.h"
 
@@ -58,6 +59,7 @@ void * sendPacketToServer()
         {
             if (action[0] == 'p')
             {
+                startMenu();
                 gameDestroy();
                 runGame=0;
                 pthread_exit(0);
