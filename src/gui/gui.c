@@ -210,6 +210,10 @@ void gameDestroy()
     {
         SDL_DestroyTexture(getGame()->playerTileset);
     }
+    if(getGame()->explosion)
+    {
+        Mix_FreeChunk(getGame()->explosion);
+    }
     if(getGame()->musique)
     {
         Mix_FreeMusic(getGame()->musique);
