@@ -38,6 +38,7 @@ void destroyMenu(Menu* menu);
 Menu* main_menu();
 void showMenu(Menu* menu);
 char* userWrite(Menu* menu);
+void startMenu();
 
 #ifndef BOMBERMAN_MENU_GUI_H
 #define BOMBERMAN_MENU_GUI_H

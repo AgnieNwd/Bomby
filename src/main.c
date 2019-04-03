@@ -24,7 +24,7 @@ void runClient(ConnectionProps* param)
     startClient(param->port, param->ip);
 }
 
-int main()
+void startMenu()
 {
     Menu *mainMenu = main_menu();
     ConnectionProps* param = (ConnectionProps*)malloc(sizeof(ConnectionProps));
@@ -47,6 +47,11 @@ int main()
         runClient(param);
         pthread_join(server,NULL);
     }
+    free(param);
+}
+int main()
+{
+    startMenu();
 }
 
 

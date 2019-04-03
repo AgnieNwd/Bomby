@@ -143,13 +143,13 @@ ConnectionProps* choiceMode(Menu* menu)
         {
             if (e.type == SDL_QUIT)
             {
-                result = 1;
+                exit(0);
             } else if (e.type == SDL_KEYDOWN)
             {
                 switch (e.key.keysym.sym)
                 {
                     case SDLK_ESCAPE :
-                        result = 1;
+                        exit(0);
                         break;
                     case SDLK_RETURN :
                         Mix_PlayChannel(-1, menu->laser, 0);
