@@ -20,6 +20,7 @@
 static Client connected_clients[4];
 static game_info_t infoGame;
 int gameOver = 0;
+int canMove = 0;
 int minClientsToStart = 2;
 
 Object * getPlayerBySocket(int sock)
@@ -184,7 +185,7 @@ int read_client(int client, int *connected_clients_cnt)
         printf("client disconected\n");
         return -1;
     }
-    if (gameOver == 0 && *connected_clients_cnt >= minClientsToStart)
+    if (gameOver == 0 && canMove == 1)
     {
         playerInterfaceController(getPlayerBySocket(client), buff[0]);
         infoGame.notifaction = 0;
@@ -279,6 +280,7 @@ int startServer(char* port)
                 } else if(connected_clients_cnt == minClientsToStart)
                 {
                     infoGame.notifaction = 2;
+                    canMove = 1;
 
                 } else
                 {
