@@ -171,7 +171,7 @@ void initListeners(Client *connected_clients,fd_set *file_discriptor , struct ti
     select(sockSum + 1, file_discriptor, NULL, NULL, &waiting_time);
 }
 
-int read_client(int client, int *connected_clients_cnt)
+int read_client(int client)
 {
     char buff[1];
 
@@ -203,7 +203,7 @@ void checkMessages(Client *connected_clients,fd_set *file_discriptor, int *conne
         {
             if(FD_ISSET(connected_clients[i].socket, file_discriptor))
             {
-                if (read_client(connected_clients[i].socket, connected_clients_cnt) == -1)
+                if (read_client(connected_clients[i].socket) == -1)
                 {
                     if (*connected_clients_cnt != 0)
                     {
