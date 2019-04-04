@@ -208,6 +208,16 @@ void checkMessages(Client *connected_clients,fd_set *file_discriptor, int *conne
                     {
                         *connected_clients_cnt -= 1;
                     }
+
+                    Object *pl = getPlayerBySocket(connected_clients[i].socket);
+                    if(pl->alive==1)
+                    {
+                        pl->alive=0;
+                        removeObjFromCell(pl,pl->posY, pl->posX);
+                        checkGameOver();
+                        notificateAllClients();
+                    }
+
                     printf("Player:(%d)%s:%d disconnected\n", connected_clients[i].id,
                            inet_ntoa(connected_clients[i].client_address.sin_addr),
                            ntohs(connected_clients[i].client_address.sin_port));
@@ -272,18 +282,23 @@ int startServer(char* port)
             {
                 printf("New connection %s:%d\n", inet_ntoa(newAddr.sin_addr), ntohs(newAddr.sin_port));
                 printf("%d Client connected\n", connected_clients_cnt);
-                addObjToCell(getPlayerBySocket(connected_client), getPlayerBySocket(connected_client)->posY, getPlayerBySocket(connected_client)->posX);
-                if (connected_clients_cnt < minClientsToStart)
-                {
-                    infoGame.notifaction = 1;
-                } else if(connected_clients_cnt == minClientsToStart)
-                {
-                    infoGame.notifaction = 2;
+                Object *newPlayer = getPlayerBySocket(connected_client);
+                if(newPlayer->alive==1) {
 
-                } else
-                {
-                    infoGame.notifaction = 0;
+                    addObjToCell(newPlayer, newPlayer->posY, newPlayer->posX);
+                    if (connected_clients_cnt < minClientsToStart) {
+                        infoGame.notifaction = 1;
+                    } else if (connected_clients_cnt == minClientsToStart) {
+                        infoGame.notifaction = 2;
+
+                    } else {
+                        infoGame.notifaction = 0;
+                    }
+                } else{
+                    printf("Dead player connected %s:%d\n", inet_ntoa(newAddr.sin_addr), ntohs(newAddr.sin_port));
                 }
+
+
                 notificateAllClients();
                 if(connected_clients_cnt < serverConfig.allowedClientsCount)
                 {
