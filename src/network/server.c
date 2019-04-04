@@ -20,7 +20,7 @@
 static Client connected_clients[4];
 static game_info_t infoGame;
 int gameOver = 0;
-int minClientsToStart = 4;
+int minClientsToStart = 2;
 
 Object * getPlayerBySocket(int sock)
 {
@@ -170,7 +170,7 @@ void initListeners(Client *connected_clients,fd_set *file_discriptor , struct ti
     select(sockSum + 1, file_discriptor, NULL, NULL, &waiting_time);
 }
 
-int read_client(int client)
+int read_client(int client, int *connected_clients_cnt)
 {
     char buff[1];
 
@@ -184,7 +184,7 @@ int read_client(int client)
         printf("client disconected\n");
         return -1;
     }
-    if (gameOver == 0)
+    if (gameOver == 0 && *connected_clients_cnt >= minClientsToStart)
     {
         playerInterfaceController(getPlayerBySocket(client), buff[0]);
         infoGame.notifaction = 0;
@@ -202,7 +202,7 @@ void checkMessages(Client *connected_clients,fd_set *file_discriptor, int *conne
         {
             if(FD_ISSET(connected_clients[i].socket, file_discriptor))
             {
-                if (read_client(connected_clients[i].socket) == -1)
+                if (read_client(connected_clients[i].socket, connected_clients_cnt) == -1)
                 {
                     if (*connected_clients_cnt != 0)
                     {

@@ -4,13 +4,11 @@ RM = rm -f
 CFLAGS = -Wall -Wextra -Werror -std=gnu99
 SDLFLAGS = -lSDL2 -lSDL2main -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lfreetype -lpthread
 SRC =	./src/main.c \
-		./src/config.c \
 		./src/network/client.c \
 		./src/network/server.c \
 		./src/instances/bomb.c \
 		./src/instances/cell.c \
 		./src/instances/map.c \
-		./src/instances/menu.c \
 		./src/instances/object.c \
 		./src/instances/player.c \
 		./src/gui/gui.c \

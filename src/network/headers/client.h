@@ -10,10 +10,5 @@
 #include <time.h>
 
 int startClient(char* port,char *ip);
-typedef struct  {
-    int socket;
-    struct timespec times;
-    struct sockaddr_in serverAddr;
 
-} clientNetworkParams;
 #endif //BOMBERMAN_CLIENT_H
