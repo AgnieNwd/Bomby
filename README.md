@@ -5,7 +5,7 @@ Develop in C with SDL2.
 Command compilation :
 ```
 make
-./bomberman
+./Bomberman
 ```
 ReCompilation command : ``` make re ```
 
