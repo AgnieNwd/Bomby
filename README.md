@@ -3,6 +3,9 @@
 
 ![Main](/screenshots/main_title.png)
 
+# Support
+Tested on GNU/Linux Debian 9
+
 # Build & Lunch
 Command compilation :
 ```
