@@ -1,5 +1,5 @@
 # Bomby
-A multiplayer local Bomberman game developed in C with SDL2.
+🕹 School Project - A multiplayer local Bomberman game developed in C with SDL2.
 
 ![Main](/screenshots/main_title.png)
 
